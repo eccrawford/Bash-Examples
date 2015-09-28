@@ -1,0 +1,6 @@
+#!/bin/bash
+
+while ((name<=$#)); do
+	echo $(char3(name))
+
+done

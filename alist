@@ -1,0 +1,10 @@
+#!/bin/bash
+word=$1
+count=0
+for word in $*; do
+if [[ ${word:0:1} == a ]]; then
+	count=$[$count+1]
+fi
+done
+echo $count
+

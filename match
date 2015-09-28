@@ -1,0 +1,6 @@
+
+#!/bin/bash
+word=$1
+character=$2
+letter="${word//[^$character]}"
+echo "${#letter}"

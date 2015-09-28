@@ -1,0 +1,11 @@
+fileName=$1
+
+if [[ !(-e $fileName)]]; then
+echo "File does not exist"
+
+elif [[ -w $fileName ]]; then
+echo "File is writeable"
+
+elif [[ !(-w $fileName) ]]; then
+echo "File is not writeable"
+fi
