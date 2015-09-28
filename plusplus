@@ -1,0 +1,5 @@
+#!/bin/bash
+
+#plusplus- this program changes all statements of the form var=var+1; to var++;
+
+sed -i -re 's/(\<[a-zA-Z]*\>)=\1\+1;/\1\+\+;/g' $1

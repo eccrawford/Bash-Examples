@@ -1,0 +1,5 @@
+#!/bin/bash
+
+#nogoto- locates all 'goto' statements in every .C file in a given directory
+
+grep -rwl --include="*.c" "goto" $1/

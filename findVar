@@ -1,0 +1,5 @@
+#!/bin/bash
+
+#findVar- locates a C variable in all .c and .h files in a directory
+
+grep -rwH --include="*.h" --include="*.c*" $2 $1/

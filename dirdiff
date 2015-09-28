@@ -1,0 +1,67 @@
+#dirdiff- compares the differences between files in two given directories
+
+#!/bin/bash
+
+dir1=$1
+dir2=$2
+
+#error checking
+if [[ $#<2||$#>2 ]]; then
+	echo "Error: Expected exactly 2 arguments given" >&2
+	exit
+elif [[ !((-d $dir1)) && !((-d $dir2)) ]]; then
+	echo "Error: Neither $dir1 nor $dir2 exist or they are not readable" >&2
+	exit
+elif [[ !((-d $dir1)) ]]; then
+	echo "Error: $dir1 does not exist or isn't readable" >&2
+	exit
+elif [[ !((-d $dir2)) ]]; then
+	echo "Error: $dir2 does not exist or isn't readable" >&2
+	exit
+fi
+
+#loops through first directory and outputs differences in files from
+#second directory
+for file in $dir1/*; do
+	fileBase=$(basename $file)
+	if [[ ((-e $dir1/$fileBase)) && !((-e $dir2/$fileBase)) ]]; then
+		echo $fileBase is in $dir1 but not $dir2 >> results
+	fi
+done
+
+#loops through second directory and outputs differences in files from
+#first directory
+for file in $dir2/*; do
+		fileBase=$(basename $file)
+		if [[ !((-e $dir1/$fileBase)) && ((-e $dir2/$fileBase)) ]]; then
+			echo $fileBase is in $dir2 but not $dir1 >> results
+		fi
+done
+
+#throw-away diff statement which initially checks for identical directories
+diff -q $dir1 $dir2 >/dev/null 2>&1
+if [[ $? -eq 0 ]]; then
+	exit 0 #if diff determines there are no differences, exit with 0 status
+fi
+
+#loops through the first directory again to output differences in contents
+#of files
+for file in $dir1/*
+do
+		fileBase=$(basename $file)
+		#similar to before, this diff determines if there are differences
+		#between the contents of files with the same name in the
+		#two directories
+		diff -q $dir1/$fileBase $dir2/$fileBase >/dev/null 2>&1
+		if [[ $? -eq 1 ]]; then
+			echo Differences between $dir1/$fileBase and $dir2/$fileBase >> results
+		fi
+		#if a file exists in both directory 1 and 2, perform diff on
+		#the contents
+		if [[  ((-e $dir1/$fileBase)) && ((-e $dir2/$fileBase)) ]]; then
+			diff $dir1/$fileBase $dir2/$fileBase >> results
+			cat results >| diffReport.txt
+		fi
+done
+rm -f results
+exit 1
